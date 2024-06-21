@@ -1,0 +1,7 @@
+<div>
+    <h2>Transfer cUSD</h2>
+    <input type="text" id="receiver-address" placeholder="Receiver Address">
+    <input type="text" id="transfer-amount" placeholder="Amount to Transfer">
+    <button hx-post="/transfer-cusd" hx-include="#receiver-address,#transfer-amount">Transfer cUSD</button>
+    <p id="status"></p>
+</div>

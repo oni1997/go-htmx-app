@@ -1,0 +1,23 @@
+# Config file for Air
+
+# Root directory for http
+root_dir = "."
+tmp_dir = "tmp"
+
+# List of build excludes
+excludes = ["tmp", "vendor"]
+
+# Watch list
+[[watch]]
+name = "go"
+path = "."
+
+[log]
+level = "debug"
+
+[build]
+bin = "tmp/main"
+cmd = "go build -o tmp/main ."
+
+[run]
+cmd = "./tmp/main"

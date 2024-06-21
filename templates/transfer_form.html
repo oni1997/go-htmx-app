@@ -1,0 +1,15 @@
+<div>
+    <h2>Transfer cUSD</h2>
+    <form hx-post="/transfer-cusd" hx-target="#transfer-form" hx-swap="outerHTML">
+        <label for="receiver-address">Receiver Address:</label><br>
+        <input type="text" id="receiver-address" name="receiver-address" required><br><br>
+        <label for="transfer-amount">Amount:</label><br>
+        <input type="text" id="transfer-amount" name="transfer-amount" required><br><br>
+        <button type="submit">Send</button>
+    </form>
+    <div id="transfer-form">
+        {{ if .Status }}
+        <p>Status: {{.Status}}</p>
+        {{ end }}
+    </div>
+</div>
