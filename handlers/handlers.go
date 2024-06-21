@@ -12,19 +12,15 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
+
+	"go-htmx-app/models"
+
 )
 
 const cUSDAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 const cUSDDecimals = 18
 
-type BalanceResponse struct {
-	Balance string `json:"balance"`
-}
 
-type TransferRequest struct {
-	To     string `json:"to"`
-	Amount string `json:"amount"`
-}
 
 func CUSDBalanceHandler(w http.ResponseWriter, r *http.Request) {
     address := r.URL.Query().Get("address")
@@ -35,19 +31,17 @@ func CUSDBalanceHandler(w http.ResponseWriter, r *http.Request) {
 
     balance := getCUSDBalance(r.Context(), address)
     w.Header().Set("Connection", "close")
-    json.NewEncoder(w).Encode(BalanceResponse{Balance: balance})
+    json.NewEncoder(w).Encode(models.BalanceResponse{Balance: balance})
 }
 
 
 func TransferCUSDHandler(w http.ResponseWriter, r *http.Request) {
-    var req TransferRequest
+    var req models.TransferRequest
     if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
         http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
 
-    // In a real application, you would perform the transfer here
-    // For now, we'll just return a success message
     w.Header().Set("Connection", "close")
     w.WriteHeader(http.StatusOK)
     json.NewEncoder(w).Encode(map[string]string{"status": "Transaction initiated"})
