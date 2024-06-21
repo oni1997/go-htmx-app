@@ -1,6 +1,7 @@
 package api
 
 import (
+	"go-htmx-app/handlers"
 	"html/template"
 	"net/http"
 	"path/filepath"
@@ -13,11 +14,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	case "/":
 		templates.ExecuteTemplate(w, "index.html", nil)
 	case "/wallet-status":
-		// Handle wallet status
+		templates.ExecuteTemplate(w, "wallet_status.html", nil)
 	case "/cusd-balance":
-		// Handle cUSD balance
+		handlers.CUSDBalanceHandler(w, r)
 	case "/transfer-cusd":
-		// Handle cUSD transfer
+		handlers.TransferCUSDHandler(w, r)
 	default:
 		http.FileServer(http.Dir("static")).ServeHTTP(w, r)
 	}

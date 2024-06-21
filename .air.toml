@@ -2,7 +2,6 @@
 
 # Root directory for http
 root_dir = "."
-tmp_dir = "tmp"
 
 # List of build excludes
 excludes = ["tmp", "vendor"]
@@ -12,12 +11,34 @@ excludes = ["tmp", "vendor"]
 name = "go"
 path = "."
 
+[[watch]]
+name = "api"
+path = "./api"
+
+[[watch]]
+name = "handlers"
+path = "./handlers"
+
+[[watch]]
+name = "static"
+path = "./static"
+
+[[watch]]
+name = "templates"
+path = "./templates"
+
 [log]
 level = "debug"
 
+# Build configuration
 [build]
+# Binaries output path (you may adjust this as needed)
 bin = "tmp/main"
+
+# Build command, use 'go build' with output to the defined 'bin' path
 cmd = "go build -o tmp/main ."
 
+# Run configuration
 [run]
+# Command to run the built binary
 cmd = "./tmp/main"
