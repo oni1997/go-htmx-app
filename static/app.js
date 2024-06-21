@@ -12,6 +12,8 @@ async function connectWallet() {
             currentAccount = accounts[0];
             updateConnectionStatus(true);
             updateBalance();
+            document.getElementById('connect-button').style.display = 'none';
+            document.getElementById('disconnect-button').style.display = 'block';
         } catch (error) {
             console.error('Error connecting to MetaMask', error);
             updateConnectionStatus(false);
@@ -22,14 +24,19 @@ async function connectWallet() {
     }
 }
 
+function disconnectWallet() {
+    currentAccount = null;
+    updateConnectionStatus(false);
+    document.getElementById('connect-button').style.display = 'block';
+    document.getElementById('disconnect-button').style.display = 'none';
+}
+
 function updateConnectionStatus(isConnected) {
     const statusElement = document.getElementById('connection-status');
     if (isConnected) {
-        statusElement.textContent = '🟢 Connected';
-        statusElement.classList.add('connected');
+        statusElement.textContent = 'Wallet connected';
     } else {
-        statusElement.textContent = '⚪ Not connected';
-        statusElement.classList.remove('connected');
+        statusElement.textContent = 'Wallet disconnected';
     }
 }
 
@@ -48,7 +55,7 @@ async function updateBalance() {
             
             const balance = await contract.methods.balanceOf(currentAccount).call();
             const balanceInCUSD = web3.utils.fromWei(balance, 'ether');
-            document.getElementById('balance').textContent = `Balance: ${parseFloat(balanceInCUSD).toFixed(6)} cUSD`;
+            document.getElementById('transfer-amount').placeholder = `Amount to Transfer (Max: ${parseFloat(balanceInCUSD).toFixed(6)} cUSD)`;
         } catch (error) {
             console.error('Error fetching balance:', error);
         }
@@ -116,9 +123,23 @@ function closeModal() {
     modal.classList.remove('show');
 }
 
-// Make sure this event listener is set up
+function updateCurrentTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById('current-time').textContent = timeString;
+}
+
+// Event listeners
 document.getElementById('close-modal').addEventListener('click', closeModal);
 document.getElementById('transfer-form').addEventListener('submit', transferCUSD);
+document.getElementById('connect-button').addEventListener('click', connectWallet);
+document.getElementById('disconnect-button').addEventListener('click', disconnectWallet);
+
+// Update time every second
+setInterval(updateCurrentTime, 1000);
+
+// Initial time update
+updateCurrentTime();
 
 // Check if already connected
 if (typeof window.ethereum !== 'undefined') {
@@ -131,8 +152,11 @@ if (typeof window.ethereum !== 'undefined') {
 
 // Listen for account changes
 if (typeof window.ethereum !== 'undefined') {
-    ethereum.on('accountsChanged', connectWallet);
+    ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length > 0) {
+            connectWallet();
+        } else {
+            disconnectWallet();
+        }
+    });
 }
-
-// Initial connection attempt
-connectWallet();
